@@ -91,6 +91,55 @@ void convertTen2HexRecursion(int64_t src, int scale) {
     printNum(mode);
 }
 
+static int calcTimes = 0;
+
+/**
+ * 在不申请内存的情况下，调整数组顺序使奇数位于偶数前面
+ * 时间复杂度 O(n)
+ */
+NSArray * divideGroup(NSArray *aNums) {
+    
+    NSMutableArray *nums = [NSMutableArray arrayWithArray:aNums];
+    NSInteger lastIndex = nums.count - 1;
+    //如果一直遍历到最后一个，如果是奇数，说明全部是奇数；如果是偶数，本身就不需要移动；
+    for (NSInteger i=0; i<lastIndex; i++) {
+        
+        calcTimes++;
+        
+        //前后两个指针位置重叠，说明数组已经全部遍历（从前往后，从后往前）
+        if (i >= lastIndex) {
+            break;
+        }
+        
+        NSNumber *first = nums[i];
+        if (first.integerValue % 2 == 1) {
+            continue;
+        }
+        
+        NSNumber *last = nil;
+        for (NSInteger j=lastIndex; j>i; j--) {
+            calcTimes++;
+            
+            last = nums[j];
+            if (last.integerValue % 2 == 0) {
+                continue;
+            }
+            lastIndex = j;
+            break;
+        }
+        
+        if (last) {
+            NSNumber *temp = [last copy];
+            nums[lastIndex] = nums[i];
+            nums[i] = temp;
+            //从后面找到一个后，当前位置往前移
+            lastIndex--;
+        }
+    }
+    
+    return nums;
+}
+
 int main(int argc, const char * argv[]) {
     @autoreleasepool {
         // insert code here...
@@ -118,6 +167,17 @@ int main(int argc, const char * argv[]) {
         NSLog(@"------------>递归方法 10进制转换X进制");
         convertTen2HexRecursion(3243543, 16);
         printf("\n");
+        
+        NSLog(@"------------>在不申请内存的情况下，调整数组顺序使奇数位于偶数前面");
+        NSArray *beforeNums = @[
+            @234, @235, @24, @67, @234, @23, @78, @30,
+            @234, @235, @24, @67, @234, @23, @78, @30,
+            @234, @235, @24, @67, @234, @23, @78, @30,
+            @234, @235, @24, @67, @234, @23, @78, @30,
+            @234, @235, @24, @67, @234, @23, @78, @30
+        ];
+        NSArray *afterNums = divideGroup(beforeNums);
+        NSLog(@"%d times, afterNums: %@", calcTimes, afterNums);
         
         NSLog(@"Hello, World!");
     }
