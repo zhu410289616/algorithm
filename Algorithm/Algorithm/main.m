@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #include "stdlib.h"
+#import "RHLinkedList.h"
 
 /** 先取余，将最后一个取出来，再求整商，每次循环乘十，分离出每个数据反转 */
 int64_t reverseByMod(int32_t src) {
@@ -178,6 +179,9 @@ int main(int argc, const char * argv[]) {
         ];
         NSArray *afterNums = divideGroup(beforeNums);
         NSLog(@"%d times, afterNums: %@", calcTimes, afterNums);
+        
+        RHLinkedList *list = [[RHLinkedList alloc] init];
+        [list execute];
         
         NSLog(@"Hello, World!");
     }
